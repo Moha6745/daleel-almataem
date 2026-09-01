@@ -4,16 +4,279 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>دليل المطاعم — مطاعم الرياض</title>
-<meta name="description" content="دليل مطاعم الرياض: تصفح حسب المنطقة ونوع الطعام، شوف المنيو والتقييمات، وقارن أسعار جاهز وهنقرستيشن وكيتا لتعرف أرخص تطبيق لطلبك.">
-<meta property="og:title" content="دليل المطاعم — مطاعم الرياض">
-<meta property="og:description" content="قارن أسعار المنيو بين تطبيقات التوصيل واعرف الأوفر لطلبك.">
-<meta property="og:type" content="website">
+<meta name="description" content="دليل مطاعم الرياض: تصفح حسب المنطقة ونوع الطعام، شوف المنيو والتقييمات، وقارن أسعار جاهز وهنقرستيشن وكيتا.">
 <meta name="theme-color" content="#FFCC00">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23FFCC00'/><text y='.9em' x='50' text-anchor='middle' font-size='62'>🍽</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23FFCC00'/><text y='.9em' x='50' text-anchor='middle' font-size='62'>&#127869;</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css">
+<style>
+:root{
+  --yellow:#FFCC00;
+  --yellow-deep:#F2B705;
+  --ink:#141414;
+  --ink-soft:#5C5C5C;
+  --line:#E8E8E8;
+  --bg:#F6F6F4;
+  --card:#FFFFFF;
+  --green:#0E9F6E;
+  --green-bg:#E7F7F0;
+  --red:#D93F3F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Tajawal',-apple-system,'Segoe UI',Arial,sans-serif;
+  background:var(--bg);color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.6;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select{font-family:inherit}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px;border-radius:6px}
+
+/* ---------- الهيكل ---------- */
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+
+header.top{
+  background:var(--yellow);
+  border-bottom:3px solid var(--ink);
+  position:sticky;top:0;z-index:50;
+}
+.top-in{display:flex;align-items:center;gap:14px;padding:14px 0;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:22px;letter-spacing:-.5px}
+.brand .mark{
+  width:38px;height:38px;background:var(--ink);color:var(--yellow);
+  border-radius:12px;display:grid;place-items:center;font-size:20px;
+}
+.brand small{display:block;font-size:11px;font-weight:500;opacity:.7;letter-spacing:0}
+.search{
+  flex:1;min-width:230px;display:flex;align-items:center;gap:8px;
+  background:#fff;border:2px solid var(--ink);border-radius:14px;padding:9px 14px;
+}
+.search input{border:none;outline:none;width:100%;font-size:15px;background:transparent}
+.city-pill{
+  background:var(--ink);color:#fff;border-radius:999px;
+  padding:8px 16px;font-size:13px;font-weight:700;white-space:nowrap;
+}
+
+/* ---------- شريط التنبيه ---------- */
+.notice{
+  background:var(--ink);color:#EDEDED;font-size:12.5px;
+  padding:8px 0;text-align:center;
+}
+.notice b{color:var(--yellow)}
+
+/* ---------- الفلاتر ---------- */
+.filters{padding:22px 0 6px}
+.frow{margin-bottom:14px}
+.flabel{font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:8px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{
+  border:2px solid var(--line);background:#fff;border-radius:999px;
+  padding:7px 16px;font-size:14px;font-weight:500;transition:.15s;
+}
+.chip:hover{border-color:#CFCFCF}
+.chip[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:700}
+.chip .em{margin-left:5px}
+
+.bar{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;flex-wrap:wrap;margin:18px 0 14px;
+}
+.count{font-size:14px;color:var(--ink-soft)}
+.count b{color:var(--ink);font-size:16px}
+.sort{display:flex;align-items:center;gap:8px;font-size:14px}
+.sort select{
+  border:2px solid var(--line);background:#fff;border-radius:10px;
+  padding:7px 12px;font-size:14px;font-weight:500;
+}
+
+/* ---------- شبكة المطاعم ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding-bottom:50px}
+.rcard{
+  background:var(--card);border-radius:18px;overflow:hidden;
+  border:1px solid var(--line);text-align:right;width:100%;
+  display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s;
+}
+.rcard:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,0,0,.09)}
+.thumb{
+  height:120px;display:grid;place-items:center;font-size:52px;position:relative;
+}
+.thumb .reg{
+  position:absolute;top:10px;left:10px;background:rgba(20,20,20,.82);color:#fff;
+  font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;
+}
+.rbody{padding:14px 15px 15px;flex:1;display:flex;flex-direction:column}
+.rname{font-size:17.5px;font-weight:800;margin-bottom:3px}
+.rmeta{font-size:13px;color:var(--ink-soft);margin-bottom:10px}
+.rstats{display:flex;align-items:center;gap:12px;font-size:13.5px;margin-bottom:12px;flex-wrap:wrap}
+.star{color:var(--yellow-deep);font-weight:800}
+.dot{color:#CACACA}
+.best{
+  background:var(--green-bg);border-radius:12px;padding:9px 11px;
+  font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  margin-top:auto;
+}
+.best .lbl{color:#0A7A55;font-weight:500}
+.best .val{font-weight:800;color:#076B4B}
+.apps{display:flex;gap:5px;margin-bottom:11px;flex-wrap:wrap}
+.apptag{
+  font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:7px;
+  border:1.5px solid var(--line);color:var(--ink-soft);
+}
+.apptag.off{opacity:.35;text-decoration:line-through}
+
+.empty{
+  grid-column:1/-1;text-align:center;padding:70px 20px;color:var(--ink-soft);
+}
+.empty .big{font-size:44px;margin-bottom:12px}
+.empty h3{font-size:19px;color:var(--ink);margin-bottom:6px}
+
+/* ---------- صفحة المطعم ---------- */
+.back{
+  display:inline-flex;align-items:center;gap:7px;margin:20px 0 16px;
+  font-weight:700;font-size:14.5px;background:#fff;border:2px solid var(--ink);
+  border-radius:12px;padding:8px 16px;
+}
+.hero{
+  background:var(--card);border:1px solid var(--line);border-radius:20px;
+  overflow:hidden;margin-bottom:18px;
+}
+.hero-top{height:150px;display:grid;place-items:center;font-size:70px}
+.hero-in{padding:18px 22px 20px}
+.hero h1{font-size:28px;font-weight:900;letter-spacing:-.5px}
+.hero .sub{color:var(--ink-soft);font-size:14.5px;margin:4px 0 14px}
+.hero .about{font-size:15px;color:#3A3A3A;max-width:70ch;margin-bottom:16px}
+.kpis{display:flex;gap:10px;flex-wrap:wrap}
+.kpi{
+  background:var(--bg);border-radius:14px;padding:10px 16px;min-width:96px;
+}
+.kpi .n{font-size:19px;font-weight:900;line-height:1.2}
+.kpi .l{font-size:12px;color:var(--ink-soft)}
+
+.tabs{display:flex;gap:6px;border-bottom:2px solid var(--line);margin-bottom:20px;overflow-x:auto}
+.tab{
+  padding:11px 18px;font-size:15px;font-weight:700;color:var(--ink-soft);
+  border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;
+}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--yellow)}
+
+.panel{padding-bottom:60px}
+.sec-h{font-size:19px;font-weight:800;margin-bottom:6px}
+.sec-p{font-size:14px;color:var(--ink-soft);margin-bottom:16px;max-width:66ch}
+
+/* المنيو */
+.mitem{
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:14px 16px;margin-bottom:10px;
+  display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+}
+.mitem.picked{border-color:var(--yellow-deep);background:#FFFDF2}
+.mcheck{
+  width:24px;height:24px;border:2px solid #D5D5D5;border-radius:8px;
+  display:grid;place-items:center;flex-shrink:0;font-size:14px;color:transparent;
+}
+.mitem.picked .mcheck{background:var(--yellow);border-color:var(--yellow-deep);color:var(--ink)}
+.minfo{flex:1;min-width:150px}
+.minfo .n{font-weight:700;font-size:15.5px}
+.minfo .d{font-size:13px;color:var(--ink-soft)}
+.mprices{display:flex;gap:7px;flex-wrap:wrap}
+.pp{
+  border:1.5px solid var(--line);border-radius:10px;padding:5px 10px;
+  text-align:center;min-width:76px;
+}
+.pp .a{font-size:11px;color:var(--ink-soft);font-weight:500}
+.pp .v{font-size:14.5px;font-weight:800}
+.pp.low{border-color:var(--green);background:var(--green-bg)}
+.pp.low .a{color:#0A7A55}
+.pp.na{opacity:.4}
+
+/* المقارنة */
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:20px}
+.ccard{
+  background:#fff;border:2px solid var(--line);border-radius:18px;padding:18px;
+  position:relative;
+}
+.ccard.win{border-color:var(--green)}
+.ccard.na{opacity:.55}
+.ribbon{
+  position:absolute;top:-11px;right:16px;background:var(--green);color:#fff;
+  font-size:11.5px;font-weight:800;padding:3px 12px;border-radius:999px;
+}
+.ccard h4{font-size:17px;font-weight:800;margin-bottom:12px}
+.line{display:flex;justify-content:space-between;font-size:14px;padding:5px 0;color:var(--ink-soft)}
+.line b{color:var(--ink);font-weight:700}
+.total{
+  border-top:2px dashed var(--line);margin-top:9px;padding-top:11px;
+  display:flex;justify-content:space-between;align-items:baseline;
+}
+.total .t{font-size:14px;font-weight:700}
+.total .v{font-size:24px;font-weight:900}
+.markup{font-size:12px;color:var(--ink-soft);margin-top:7px}
+
+.verdict{
+  background:var(--ink);color:#fff;border-radius:20px;padding:22px 24px;margin-bottom:22px;
+}
+.verdict .k{font-size:13px;color:var(--yellow);font-weight:700;margin-bottom:5px}
+.verdict h3{font-size:23px;font-weight:900;margin-bottom:8px}
+.verdict p{font-size:14.5px;color:#C9C9C9;max-width:62ch}
+.verdict .save{color:var(--yellow);font-weight:800}
+
+.basketbar{
+  background:#FFFBE6;border:2px solid var(--yellow);border-radius:14px;
+  padding:11px 16px;font-size:14px;margin-bottom:16px;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.basketbar button{font-weight:700;font-size:13.5px;text-decoration:underline}
+
+/* التقييمات */
+.rev-top{display:flex;gap:26px;flex-wrap:wrap;align-items:center;margin-bottom:22px}
+.score{text-align:center}
+.score .n{font-size:52px;font-weight:900;line-height:1}
+.score .s{color:var(--yellow-deep);font-size:17px}
+.score .c{font-size:13px;color:var(--ink-soft);margin-top:2px}
+.bars{flex:1;min-width:220px}
+.brow{display:flex;align-items:center;gap:9px;font-size:13px;margin-bottom:4px}
+.btrack{flex:1;height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.bfill{height:100%;background:var(--yellow);border-radius:99px}
+
+.review{background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px 17px;margin-bottom:10px}
+.rvh{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:7px;flex-wrap:wrap}
+.avatar{
+  width:34px;height:34px;border-radius:50%;background:var(--yellow);
+  display:grid;place-items:center;font-weight:800;font-size:14px;flex-shrink:0;
+}
+.rvwho{display:flex;align-items:center;gap:9px}
+.rvwho .nm{font-weight:700;font-size:14.5px}
+.rvwho .dt{font-size:12px;color:var(--ink-soft)}
+.review p{font-size:14.5px;color:#3A3A3A}
+
+.addbox{background:#fff;border:2px dashed var(--line);border-radius:16px;padding:17px;margin-top:18px}
+.addbox h4{font-size:16px;font-weight:800;margin-bottom:12px}
+.stars-pick{display:flex;gap:4px;margin-bottom:11px;font-size:26px}
+.stars-pick button{color:#DDD;line-height:1}
+.stars-pick button.on{color:var(--yellow-deep)}
+.addbox input,.addbox textarea{
+  width:100%;border:2px solid var(--line);border-radius:11px;
+  padding:9px 12px;font-size:14.5px;margin-bottom:9px;outline:none;resize:vertical;
+}
+.addbox input:focus,.addbox textarea:focus{border-color:var(--ink)}
+.submit{
+  background:var(--yellow);border:2px solid var(--ink);border-radius:12px;
+  padding:9px 24px;font-weight:800;font-size:15px;
+}
+
+footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px;color:var(--ink-soft);text-align:center}
+
+@media(max-width:640px){
+  .hero h1{font-size:23px}
+  .thumb{height:104px;font-size:44px}
+  .mprices{width:100%}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
 </head>
 <body>
 
@@ -40,8 +303,692 @@
 <footer class="wrap">
   دليل المطاعم — مشروع مستقل غير تابع لأي تطبيق توصيل.
 </footer>
-<script src="assets/data.js"></script>
-<script src="assets/pricing.js"></script>
-<script src="assets/app.js"></script>
+
+<script>
+/* ==========================================================
+   البيانات
+   ----------------------------------------------------------
+   لتعديل الأسعار: غيّر base في المنيو (سعر الفرع بالريال)،
+   وغيّر mult لكل تطبيق (نسبة الزيادة) وقيمة fee (رسوم التوصيل).
+   السعر داخل التطبيق = base × mult.
+   ========================================================== */
+
+const APPS = {
+  jahez:{name:"جاهز", short:"جاهز"},
+  hunger:{name:"هنقرستيشن", short:"هنقر"},
+  keeta:{name:"كيتا", short:"كيتا"}
+};
+const APP_KEYS = ["jahez","hunger","keeta"];
+
+const CUISINE_EMOJI = {
+  "برغر":"🍔","بيتزا":"🍕","سعودي":"🍛","شاورما":"🌯",
+  "دجاج":"🍗","مشاوي":"🍖","قهوة وحلا":"☕"
+};
+const CUISINE_BG = {
+  "برغر":"linear-gradient(135deg,#FFE27A,#FFC300)",
+  "بيتزا":"linear-gradient(135deg,#FFD9A0,#FF9F45)",
+  "سعودي":"linear-gradient(135deg,#F3E2C0,#D9B36B)",
+  "شاورما":"linear-gradient(135deg,#FFEBB8,#F0B429)",
+  "دجاج":"linear-gradient(135deg,#FFF0B3,#FFD400)",
+  "مشاوي":"linear-gradient(135deg,#F0C9A8,#C97B4A)",
+  "قهوة وحلا":"linear-gradient(135deg,#E8D9C5,#B79268)"
+};
+
+const DATA = [
+/* ============ شمال ============ */
+{
+  id:"section-b", name:"سكشن بي", cuisine:"برغر", region:"شمال", district:"العليا",
+  rating:4.5, reviewsCount:2140, price:"$$", eta:"30–40 د",
+  about:"من أشهر مطاعم البرغر في الرياض، معروف ببرغر الدجاج المقرمش والصلصات الخاصة. يفتح لوقت متأخر.",
+  apps:{ jahez:{on:true,mult:1.10,fee:9}, hunger:{on:true,mult:1.15,fee:12}, keeta:{on:true,mult:1.06,fee:5} },
+  menu:[
+    {n:"سكشن برغر لحم", d:"باتي لحم، شيدر، صلصة السكشن", base:38},
+    {n:"كرسبي تشكن برغر", d:"دجاج مقرمش مع مخلل وصوص حار", base:34},
+    {n:"دبل تشيز برغر", d:"طبقتين لحم مع جبن مضاعف", base:47},
+    {n:"بطاطس بالجبن", d:"بطاطس مقلية مع صوص الشيدر", base:19},
+    {n:"ميلك شيك أوريو", d:"", base:22}
+  ],
+  reviews:[
+    {who:"عبدالله ا.", r:5, dt:"قبل ٣ أيام", t:"أفضل برغر دجاج جربته في الرياض. الخبز طري والقرمشة ممتازة. الزحمة وقت العشاء متعبة بس يستاهل."},
+    {who:"نوف ال.", r:4, dt:"قبل أسبوع", t:"الطعم ثابت من زمان. الأسعار زادت شوي بس الجودة ما نزلت. البطاطس بالجبن لازم تجربونها."},
+    {who:"فيصل م.", r:4, dt:"قبل أسبوعين", t:"طلبته توصيل ووصل حار والحمدلله. بس الصوص كان ناقص في الطلب."}
+  ]
+},
+{
+  id:"regal", name:"ريجل برغر", cuisine:"برغر", region:"شمال", district:"حطين",
+  rating:4.4, reviewsCount:980, price:"$$$", eta:"35–45 د",
+  about:"برغر بلحم أنغوس وجلسات داخلية وخارجية عصرية، خيار مناسب للعشاء الهادئ مع الأصدقاء.",
+  apps:{ jahez:{on:true,mult:1.12,fee:10}, hunger:{on:true,mult:1.14,fee:13}, keeta:{on:false,mult:1,fee:0} },
+  menu:[
+    {n:"ريجل كلاسيك", d:"أنغوس مع جبن أمريكي وبصل مكرمل", base:46},
+    {n:"تراف برغر", d:"مع صوص الترافل والمشروم", base:58},
+    {n:"سبايسي أنغوس", d:"هالبينو وصوص شيبوتلي", base:49},
+    {n:"أصابع موزاريلا", d:"٦ قطع مع صوص المارينارا", base:26},
+    {n:"سلطة سيزر دجاج", d:"", base:32}
+  ],
+  reviews:[
+    {who:"سلطان ب.", r:5, dt:"قبل ٥ أيام", t:"اللحم مشوي بدقة والعصارة موجودة. الجلسة الخارجية مريحة في الجو الحالي."},
+    {who:"ريم ق.", r:4, dt:"قبل ١٢ يوم", t:"الترافل برغر تجربة مختلفة فعلاً. السعر مرتفع نسبياً لكن الجودة تبرره."},
+    {who:"ماجد ع.", r:4, dt:"قبل شهر", t:"الخدمة سريعة داخل الفرع. للأسف غير متوفر على كيتا فاضطريت أطلب من جاهز."}
+  ]
+},
+{
+  id:"maestro", name:"مايسترو بيتزا", cuisine:"بيتزا", region:"شمال", district:"الملقا",
+  rating:4.3, reviewsCount:5600, price:"$$", eta:"25–35 د",
+  about:"سلسلة بيتزا سعودية منتشرة، تشتهر بخيار دمج نكهتين في نفس البيتزا وبعروضها العائلية.",
+  apps:{ jahez:{on:true,mult:1.08,fee:8}, hunger:{on:true,mult:1.12,fee:11}, keeta:{on:true,mult:1.05,fee:0} },
+  menu:[
+    {n:"بيتزا بيبروني وسط", d:"عجينة إيطالية مع بيبروني وموزاريلا", base:39},
+    {n:"بيتزا سوبريم كبير", d:"خضار مشكل مع لحم ودجاج", base:59},
+    {n:"بيتزا رانش دجاج", d:"صوص الرانش مع دجاج مشوي", base:45},
+    {n:"خبز بالثوم والجبن", d:"", base:18},
+    {n:"بيتزا نوتيلا", d:"تحلية بعجينة رقيقة", base:29}
+  ],
+  reviews:[
+    {who:"خالد ن.", r:4, dt:"قبل يومين", t:"العجينة خفيفة والطعم ثابت. ميزة دمج نكهتين حلوة إذا كنتم اثنين وأذواقكم مختلفة."},
+    {who:"هدى س.", r:5, dt:"قبل أسبوع", t:"أطلب منهم كل أسبوع تقريباً. التوصيل سريع والبيتزا توصل ساخنة."},
+    {who:"تركي ح.", r:3, dt:"قبل ٣ أسابيع", t:"مرة كانت العجينة نيّة من النص. المرات الثانية كانت ممتازة."}
+  ]
+},
+{
+  id:"romansiah", name:"الرومانسية", cuisine:"سعودي", region:"شمال", district:"النرجس",
+  rating:4.6, reviewsCount:9200, price:"$$", eta:"30–45 د",
+  about:"من أشهر مطاعم الأكل السعودي في المملكة، متخصص في الكبسة والمندي والأطباق الشعبية بكميات عائلية.",
+  apps:{ jahez:{on:true,mult:1.07,fee:8}, hunger:{on:true,mult:1.13,fee:12}, keeta:{on:true,mult:1.09,fee:6} },
+  menu:[
+    {n:"كبسة لحم نص", d:"مع رز بسمتي وصلصة حارة", base:75},
+    {n:"مندي دجاج نص", d:"دجاج مدخن مع رز المندي", base:42},
+    {n:"مظبي لحم", d:"لحم مشوي على الحجر", base:88},
+    {n:"جريش", d:"طبق شعبي بالسمن البلدي", base:26},
+    {n:"سلطة حرة", d:"", base:12}
+  ],
+  reviews:[
+    {who:"أم عبدالرحمن", r:5, dt:"قبل ٤ أيام", t:"طلبت مندي لعزيمة عشرة أشخاص ووصل في وقته والكمية كافية. الرز متبل بشكل ممتاز."},
+    {who:"بندر ط.", r:5, dt:"قبل ١٠ أيام", t:"الكبسة أقرب شي لطعم البيت. اللحم طري ويطيح عن العظم."},
+    {who:"سارة ف.", r:4, dt:"قبل شهر", t:"جودة ثابتة، بس في أوقات الذروة التوصيل يتأخر عن الوقت المذكور."}
+  ]
+},
+{
+  id:"half-million", name:"هاف مليون", cuisine:"قهوة وحلا", region:"شمال", district:"الملقا",
+  rating:4.4, reviewsCount:3300, price:"$$", eta:"20–30 د",
+  about:"سلسلة قهوة مختصة سعودية بهوية بصرية مميزة، مشهورة بمشروبات القهوة الباردة والحلا الخفيف.",
+  apps:{ jahez:{on:true,mult:1.14,fee:7}, hunger:{on:true,mult:1.16,fee:10}, keeta:{on:true,mult:1.08,fee:4} },
+  menu:[
+    {n:"آيس لاتيه", d:"", base:19},
+    {n:"سبانش لاتيه", d:"حليب مكثف مع إسبريسو", base:22},
+    {n:"في٦٠ مختصة", d:"تحضير يدوي بحبوب مختصة", base:24},
+    {n:"تشيز كيك سان سباستيان", d:"قطعة", base:26},
+    {n:"كوكيز", d:"قطعة", base:14}
+  ],
+  reviews:[
+    {who:"لمى د.", r:5, dt:"قبل يوم", t:"السبانش لاتيه عندهم مضبوط، مو حلو زيادة. المكان نفسه هادي للدراسة."},
+    {who:"عمر ك.", r:4, dt:"قبل ٦ أيام", t:"القهوة ممتازة بس أسعار التطبيقات أغلى بشكل ملحوظ من الفرع."},
+    {who:"جواهر م.", r:4, dt:"قبل ٣ أسابيع", t:"التشيز كيك يستاهل. أتمنى يزيدون خيارات الحلا."}
+  ]
+},
+
+/* ============ شرق ============ */
+{
+  id:"najd-village", name:"قرية نجد", cuisine:"سعودي", region:"شرق", district:"الروضة",
+  rating:4.5, reviewsCount:4100, price:"$$$", eta:"35–50 د",
+  about:"مطعم تراثي بأجواء نجدية قديمة وجلسات أرضية، يقدم الأكلات الشعبية السعودية بشكلها الأصلي.",
+  apps:{ jahez:{on:true,mult:1.09,fee:9}, hunger:{on:true,mult:1.12,fee:12}, keeta:{on:false,mult:1,fee:0} },
+  menu:[
+    {n:"كبسة لحم حاشي", d:"طبق فردي", base:68},
+    {n:"مرقوق", d:"طبق شعبي بالخضار واللحم", base:44},
+    {n:"قرصان", d:"", base:42},
+    {n:"مطازيز", d:"", base:46},
+    {n:"لقيمات", d:"١٢ حبة مع الدبس", base:20}
+  ],
+  reviews:[
+    {who:"ناصر ش.", r:5, dt:"قبل ٧ أيام", t:"المرقوق عندهم مرجع. الأجواء التراثية تستاهل الزيارة مو بس الطلب."},
+    {who:"منيرة ع.", r:4, dt:"قبل أسبوعين", t:"الأكل ممتاز والكمية كبيرة. الأسعار أعلى من غيرهم بس التجربة مختلفة."},
+    {who:"صالح ر.", r:5, dt:"قبل شهر", t:"طلبت قرصان توصيل وكان ساخن وطعمه بيتي."}
+  ]
+},
+{
+  id:"shawarmer", name:"شاورمر", cuisine:"شاورما", region:"شرق", district:"النسيم",
+  rating:4.2, reviewsCount:7800, price:"$", eta:"20–30 د",
+  about:"سلسلة شاورما سعودية واسعة الانتشار، خيار سريع واقتصادي مع فروع في أغلب أحياء الرياض.",
+  apps:{ jahez:{on:true,mult:1.06,fee:7}, hunger:{on:true,mult:1.10,fee:9}, keeta:{on:true,mult:1.04,fee:3} },
+  menu:[
+    {n:"شاورما دجاج عادي", d:"", base:14},
+    {n:"شاورما لحم سبيشل", d:"", base:22},
+    {n:"وجبة شاورمر", d:"سندويشين مع بطاطس ومشروب", base:34},
+    {n:"بطاطس مقلية", d:"", base:11},
+    {n:"عصير برتقال طازج", d:"", base:12}
+  ],
+  reviews:[
+    {who:"يوسف ب.", r:4, dt:"قبل يومين", t:"سعر وطعم معقول جداً. أفضل خيار سريع لما تكون مستعجل."},
+    {who:"دلال ن.", r:4, dt:"قبل ٩ أيام", t:"الشاورما اللحم أفضل من الدجاج بكثير. الصوص مضبوط."},
+    {who:"أحمد ز.", r:3, dt:"قبل شهر", t:"الجودة تختلف من فرع لفرع. فرع النسيم من الأفضل."}
+  ]
+},
+{
+  id:"albaik", name:"البيك", cuisine:"دجاج", region:"شرق", district:"قرطبة",
+  rating:4.6, reviewsCount:15400, price:"$", eta:"25–40 د",
+  about:"سلسلة الدجاج المقلي الأشهر في السعودية، معروفة بصوص الثوم والأسعار المنخفضة والزحام الدائم.",
+  apps:{ jahez:{on:true,mult:1.05,fee:8}, hunger:{on:true,mult:1.09,fee:11}, keeta:{on:true,mult:1.05,fee:5} },
+  menu:[
+    {n:"وجبة بروستد ٤ قطع", d:"مع بطاطس وخبز وصوص ثوم", base:20},
+    {n:"وجبة نجت ١٢ قطعة", d:"", base:19},
+    {n:"وجبة فيليه ٥ قطع", d:"", base:24},
+    {n:"سندويش زنجر", d:"", base:14},
+    {n:"صوص ثوم إضافي", d:"", base:3}
+  ],
+  reviews:[
+    {who:"معاذ ح.", r:5, dt:"قبل ٣ أيام", t:"ما تغير الطعم من سنين. صوص الثوم لحاله يستاهل."},
+    {who:"شهد ي.", r:5, dt:"قبل أسبوع", t:"أرخص وجبة تشبع في الرياض بصراحة. بس لازم تطلب بدري قبل الزحمة."},
+    {who:"عبدالعزيز ل.", r:4, dt:"قبل شهرين", t:"التوصيل أحياناً يوصل والبطاطس بردانة. في الفرع أفضل."}
+  ]
+},
+{
+  id:"pizzahut", name:"بيتزا هت", cuisine:"بيتزا", region:"شرق", district:"اليرموك",
+  rating:4.0, reviewsCount:6100, price:"$$", eta:"30–40 د",
+  about:"سلسلة بيتزا عالمية، تشتهر بالعجينة السميكة والعروض الأسبوعية المتكررة على الأحجام الكبيرة.",
+  apps:{ jahez:{on:true,mult:1.10,fee:9}, hunger:{on:true,mult:1.06,fee:8}, keeta:{on:true,mult:1.12,fee:6} },
+  menu:[
+    {n:"بيتزا سوبر سوبريم وسط", d:"", base:49},
+    {n:"بيتزا تشيكن رانش كبير", d:"", base:64},
+    {n:"بيتزا مارجريتا صغير", d:"", base:29},
+    {n:"أجنحة دجاج حارة", d:"٨ قطع", base:27},
+    {n:"سيناميلتس", d:"تحلية بالقرفة", base:19}
+  ],
+  reviews:[
+    {who:"وليد ج.", r:4, dt:"قبل ٤ أيام", t:"العروض عندهم أفضل من الأسعار العادية بفرق كبير. راقبوا العروض قبل ما تطلبون."},
+    {who:"غادة ت.", r:3, dt:"قبل أسبوعين", t:"الطعم عادي مقارنة بالمطاعم المحلية، بس التوصيل منظم."},
+    {who:"راكان ق.", r:4, dt:"قبل شهر", t:"الأجنحة الحارة ممتازة. البيتزا حسب الفرع."}
+  ]
+},
+
+/* ============ غرب ============ */
+{
+  id:"tazaj", name:"الطازج", cuisine:"دجاج", region:"غرب", district:"ظهرة البديعة",
+  rating:4.3, reviewsCount:5200, price:"$", eta:"25–35 د",
+  about:"مشهور بالدجاج المشوي على الفحم مع الخبز والصوص، خيار عائلي اقتصادي ومنتشر منذ سنوات.",
+  apps:{ jahez:{on:true,mult:1.07,fee:8}, hunger:{on:true,mult:1.11,fee:10}, keeta:{on:true,mult:1.06,fee:4} },
+  menu:[
+    {n:"دجاج مشوي كامل", d:"مع خبز وصوص", base:32},
+    {n:"نص دجاج مع رز", d:"", base:23},
+    {n:"وجبة عائلية دجاجتين", d:"مع رز وسلطة ومشروب", base:78},
+    {n:"سلطة طحينة", d:"", base:9},
+    {n:"شوربة عدس", d:"", base:10}
+  ],
+  reviews:[
+    {who:"فهد م.", r:4, dt:"قبل ٥ أيام", t:"الدجاج مشوي كويس ومو ناشف. السعر ممتاز مقابل الكمية."},
+    {who:"أمل ص.", r:4, dt:"قبل ١١ يوم", t:"الوجبة العائلية تكفي أربعة أشخاص بسهولة. نطلبها كل جمعة."},
+    {who:"سعود ع.", r:3, dt:"قبل شهر", t:"أحياناً التتبيلة خفيفة. الصوص يعوّض."}
+  ]
+},
+{
+  id:"beit-kabsa", name:"بيت الكبسة", cuisine:"سعودي", region:"غرب", district:"العريجاء",
+  rating:4.2, reviewsCount:1900, price:"$", eta:"30–45 د",
+  about:"مطعم شعبي يقدم الكبسة والمندي بأسعار في المتناول، معروف بين سكان غرب الرياض بكرم الكمية.",
+  apps:{ jahez:{on:true,mult:1.08,fee:7}, hunger:{on:false,mult:1,fee:0}, keeta:{on:true,mult:1.05,fee:4} },
+  menu:[
+    {n:"كبسة دجاج", d:"طبق فردي", base:24},
+    {n:"مندي لحم نص", d:"", base:62},
+    {n:"كبسة لحم نص", d:"", base:65},
+    {n:"رز أبيض إضافي", d:"", base:10},
+    {n:"سلطة خضار", d:"", base:8}
+  ],
+  reviews:[
+    {who:"مشعل هـ.", r:4, dt:"قبل ٦ أيام", t:"أسعارهم من أفضل ما في المنطقة والكمية سخية. الرز طعمه ممتاز."},
+    {who:"نورة ب.", r:4, dt:"قبل أسبوعين", t:"طلبنا مندي لحم لتجمع عائلي وكان موفق. التغليف ممكن يتحسن."},
+    {who:"طارق و.", r:5, dt:"قبل شهرين", t:"قيمة مقابل سعر ممتازة. ما هو متوفر على هنقرستيشن للأسف."}
+  ]
+},
+{
+  id:"kudu", name:"كودو", cuisine:"برغر", region:"غرب", district:"الديرة",
+  rating:4.0, reviewsCount:4400, price:"$", eta:"20–30 د",
+  about:"سلسلة وجبات سريعة سعودية عريقة، معروفة بسندويش الفيليه والخبز الخاص بها.",
+  apps:{ jahez:{on:true,mult:1.06,fee:7}, hunger:{on:true,mult:1.08,fee:9}, keeta:{on:true,mult:1.10,fee:5} },
+  menu:[
+    {n:"وجبة كودو فيليه", d:"مع بطاطس ومشروب", base:27},
+    {n:"سندويش كودو برغر", d:"", base:17},
+    {n:"وجبة سبايسي تشكن", d:"", base:29},
+    {n:"بطاطس كبير", d:"", base:12},
+    {n:"آيس كريم", d:"", base:7}
+  ],
+  reviews:[
+    {who:"إبراهيم ن.", r:4, dt:"قبل ٣ أيام", t:"الفيليه عندهم ما له بديل، طعم الطفولة. الخبز مميز."},
+    {who:"لطيفة ر.", r:3, dt:"قبل أسبوع", t:"سريع ورخيص لكن الجودة ما تقارن بالمطاعم المتخصصة."},
+    {who:"حسام ك.", r:4, dt:"قبل شهر", t:"مناسب للغداء السريع أثناء الدوام."}
+  ]
+},
+{
+  id:"dominos", name:"دومينوز بيتزا", cuisine:"بيتزا", region:"غرب", district:"العريجاء",
+  rating:4.1, reviewsCount:5800, price:"$$", eta:"25–35 د",
+  about:"سلسلة بيتزا عالمية تعتمد على سرعة التحضير والتوصيل، مع عروض متكررة على الحجم الكبير.",
+  apps:{ jahez:{on:true,mult:1.09,fee:8}, hunger:{on:true,mult:1.05,fee:9}, keeta:{on:true,mult:1.11,fee:5} },
+  menu:[
+    {n:"بيتزا بيبروني كبير", d:"", base:55},
+    {n:"بيتزا تشيكن باربكيو وسط", d:"", base:44},
+    {n:"عيدان الجبن", d:"", base:22},
+    {n:"أجنحة باربكيو", d:"٦ قطع", base:24},
+    {n:"لافا كيك", d:"", base:18}
+  ],
+  reviews:[
+    {who:"زياد س.", r:4, dt:"قبل يومين", t:"أسرع توصيل بين مطاعم البيتزا. البيتزا توصل ساخنة دائماً."},
+    {who:"رهف ع.", r:4, dt:"قبل ١٠ أيام", t:"عيدان الجبن أفضل شي عندهم. البيتزا حلوة مع العروض."},
+    {who:"عبدالمجيد ف.", r:3, dt:"قبل شهر", t:"بدون عروض الأسعار مرتفعة على القيمة."}
+  ]
+},
+
+/* ============ جنوب ============ */
+{
+  id:"anas-dimashqi", name:"أنس الدمشقي", cuisine:"شاورما", region:"جنوب", district:"منفوحة",
+  rating:4.5, reviewsCount:3600, price:"$", eta:"25–35 د",
+  about:"شاورما شامية أصلية بخبز رقيق وثوم قوي، من أقدم وأشهر محلات الشاورما في جنوب الرياض.",
+  apps:{ jahez:{on:true,mult:1.07,fee:7}, hunger:{on:true,mult:1.12,fee:10}, keeta:{on:true,mult:1.05,fee:3} },
+  menu:[
+    {n:"شاورما دجاج شامي", d:"مع ثوم ومخلل", base:13},
+    {n:"شاورما لحم", d:"مع طحينة", base:19},
+    {n:"صحن شاورما دجاج", d:"", base:32},
+    {n:"بطاطس مقلية", d:"", base:10},
+    {n:"لبن عيران", d:"", base:6}
+  ],
+  reviews:[
+    {who:"أيمن ر.", r:5, dt:"قبل ٤ أيام", t:"أقرب شاورما لطعم الشام في الرياض. الثوم عندهم قوي وأصلي."},
+    {who:"مها ج.", r:4, dt:"قبل أسبوعين", t:"طعم ممتاز وسعر رخيص. المحل صغير فالطلب أفضل من الجلوس."},
+    {who:"سامي د.", r:5, dt:"قبل شهر", t:"صحن الشاورما كمية كبيرة ويكفي شخصين."}
+  ]
+},
+{
+  id:"herfy", name:"هرفي", cuisine:"برغر", region:"جنوب", district:"السويدي",
+  rating:3.9, reviewsCount:6700, price:"$", eta:"20–30 د",
+  about:"سلسلة وجبات سريعة سعودية بأسعار منخفضة وفروع كثيرة، مناسبة للوجبات السريعة والعائلية.",
+  apps:{ jahez:{on:true,mult:1.05,fee:6}, hunger:{on:true,mult:1.09,fee:9}, keeta:{on:true,mult:1.07,fee:4} },
+  menu:[
+    {n:"وجبة سوبر برغر", d:"مع بطاطس ومشروب", base:26},
+    {n:"وجبة تشيكن برغر", d:"", base:23},
+    {n:"سندويش هرفي برغر", d:"", base:15},
+    {n:"بطاطس وسط", d:"", base:10},
+    {n:"كيك بالشوكولاتة", d:"قطعة", base:8}
+  ],
+  reviews:[
+    {who:"محمد ع.", r:4, dt:"قبل ٣ أيام", t:"أسعارهم من أرخص الخيارات والوجبة تشبع. مناسب للطلاب."},
+    {who:"أروى س.", r:3, dt:"قبل أسبوع", t:"عادي، لا ممتاز ولا سيء. الاعتماد عليه لما ما يكون فيه خيارات."},
+    {who:"عادل ب.", r:4, dt:"قبل شهرين", t:"المخبوزات عندهم أفضل من البرغر بصراحة."}
+  ]
+},
+{
+  id:"mama-noura", name:"ماما نورة", cuisine:"مشاوي", region:"جنوب", district:"البطحاء",
+  rating:4.3, reviewsCount:4900, price:"$$", eta:"30–40 د",
+  about:"مطعم مشاوي وشاورما عريق في الرياض، مشهور بالفروج المشوي وصوص الثوم والوجبات العائلية.",
+  apps:{ jahez:{on:true,mult:1.08,fee:8}, hunger:{on:true,mult:1.11,fee:11}, keeta:{on:false,mult:1,fee:0} },
+  menu:[
+    {n:"فروج مشوي كامل", d:"مع خبز وثوم", base:38},
+    {n:"شيش طاووق", d:"مع رز أو خبز", base:34},
+    {n:"كباب لحم", d:"", base:42},
+    {n:"حمص بالطحينة", d:"", base:14},
+    {n:"فتوش", d:"", base:16}
+  ],
+  reviews:[
+    {who:"جاسر م.", r:5, dt:"قبل ٦ أيام", t:"الفروج عندهم من أفضل ما في الرياض. الثوم قوي بالشكل الصحيح."},
+    {who:"بشاير ن.", r:4, dt:"قبل أسبوعين", t:"المشاوي ممتازة والمقبلات طازجة. غير متوفر على كيتا وهذا يزعج."},
+    {who:"خالد ي.", r:4, dt:"قبل شهر", t:"سعر معقول وجودة ثابتة من سنين طويلة."}
+  ]
+},
+{
+  id:"kfc", name:"كنتاكي", cuisine:"دجاج", region:"جنوب", district:"الدار البيضاء",
+  rating:4.0, reviewsCount:7200, price:"$$", eta:"25–35 د",
+  about:"سلسلة الدجاج المقلي العالمية، خيار مألوف مع عروض دلاء عائلية وسندويشات متنوعة.",
+  apps:{ jahez:{on:true,mult:1.11,fee:9}, hunger:{on:true,mult:1.07,fee:10}, keeta:{on:true,mult:1.09,fee:5} },
+  menu:[
+    {n:"دلو ١٢ قطعة", d:"مع بطاطس وخبز", base:89},
+    {n:"وجبة تويستر", d:"", base:31},
+    {n:"وجبة زنجر", d:"", base:33},
+    {n:"كول سلو", d:"", base:9},
+    {n:"بطاطس كبير", d:"", base:13}
+  ],
+  reviews:[
+    {who:"رائد ح.", r:4, dt:"قبل ٤ أيام", t:"الدلو خيار عملي للعزايم الصغيرة. التتبيلة ثابتة."},
+    {who:"هيا ل.", r:3, dt:"قبل أسبوعين", t:"الأسعار مرتفعة مقارنة بالبيك على نفس النوع من الأكل."},
+    {who:"نايف ق.", r:4, dt:"قبل شهر", t:"التويستر ممتاز. التوصيل أحياناً بطيء في الذروة."}
+  ]
+}
+];
+
+const REGIONS = ["الكل","شمال","جنوب","شرق","غرب"];
+const CUISINES = ["الكل","برغر","بيتزا","سعودي","شاورما","دجاج","مشاوي","قهوة وحلا"];
+
+/* ==========================================================
+   الحسابات
+   ========================================================== */
+const money = n => Math.round(n*100)/100;
+const fmt = n => (Math.round(n*10)/10).toLocaleString('ar-SA',{maximumFractionDigits:1});
+
+// سعر صنف معيّن داخل تطبيق معيّن
+function itemPrice(rest, item, appKey){
+  const a = rest.apps[appKey];
+  if(!a || !a.on) return null;
+  return money(item.base * a.mult);
+}
+
+// حساب سلة (قائمة أصناف) عبر كل التطبيقات
+function compare(rest, items){
+  const rows = APP_KEYS.map(k=>{
+    const a = rest.apps[k];
+    if(!a || !a.on) return {key:k, on:false};
+    const sub = items.reduce((s,it)=> s + item2(it,a), 0);
+    return {key:k, on:true, sub:money(sub), fee:a.fee, total:money(sub+a.fee), mult:a.mult};
+  });
+  const live = rows.filter(r=>r.on);
+  const best = live.length ? live.reduce((m,r)=> r.total < m.total ? r : m) : null;
+  const worst = live.length ? live.reduce((m,r)=> r.total > m.total ? r : m) : null;
+  return {rows, best, worst, saving: best&&worst ? money(worst.total-best.total) : 0};
+}
+function item2(it,a){ return it.base * a.mult; }
+
+// أرخص تطبيق بناءً على المنيو كامل (يُستخدم في البطاقات)
+function bestApp(rest){
+  return compare(rest, rest.menu).best;
+}
+
+/* ==========================================================
+   الحالة
+   ========================================================== */
+const state = {
+  view:"list", id:null, tab:"menu",
+  region:"الكل", cuisine:"الكل", q:"", sort:"rating",
+  basket:{}, // id -> Set of item indexes
+  newRating:0,
+  extraReviews:{}
+};
+
+const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const app = document.getElementById('app');
+
+/* ==========================================================
+   عرض القائمة
+   ========================================================== */
+function filtered(){
+  let out = DATA.filter(r=>{
+    if(state.region!=="الكل" && r.region!==state.region) return false;
+    if(state.cuisine!=="الكل" && r.cuisine!==state.cuisine) return false;
+    if(state.q){
+      const q = state.q.trim();
+      if(!(r.name.includes(q) || r.cuisine.includes(q) || r.district.includes(q))) return false;
+    }
+    return true;
+  });
+  if(state.sort==="rating") out.sort((a,b)=>b.rating-a.rating);
+  if(state.sort==="cheap") out.sort((a,b)=>{
+    const A=bestApp(a), B=bestApp(b);
+    return (A?A.total:1e9)-(B?B.total:1e9);
+  });
+  if(state.sort==="reviews") out.sort((a,b)=>b.reviewsCount-a.reviewsCount);
+  return out;
+}
+
+function chipRow(label, values, current, action){
+  return `<div class="frow">
+    <div class="flabel">${label}</div>
+    <div class="chips">
+      ${values.map(v=>`<button class="chip" aria-pressed="${v===current}" data-act="${action}" data-val="${esc(v)}">
+        ${CUISINE_EMOJI[v]?`<span class="em">${CUISINE_EMOJI[v]}</span>`:''}${esc(v)}
+      </button>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderList(){
+  const list = filtered();
+  app.innerHTML = `
+  <section class="filters">
+    ${chipRow("المنطقة", REGIONS, state.region, "region")}
+    ${chipRow("نوع الطعام", CUISINES, state.cuisine, "cuisine")}
+  </section>
+
+  <div class="bar">
+    <div class="count"><b>${fmt(list.length)}</b> مطعم مطابق</div>
+    <label class="sort">ترتيب حسب
+      <select id="sort">
+        <option value="rating" ${state.sort==='rating'?'selected':''}>الأعلى تقييماً</option>
+        <option value="cheap" ${state.sort==='cheap'?'selected':''}>الأوفر سعراً</option>
+        <option value="reviews" ${state.sort==='reviews'?'selected':''}>الأكثر تقييمات</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="grid">
+    ${list.length ? list.map(cardHTML).join('') : `
+      <div class="empty">
+        <div class="big">🍽</div>
+        <h3>ما فيه مطاعم بهذي الفلاتر</h3>
+        <p>جرّب توسيع المنطقة أو تغيير نوع الطعام.</p>
+      </div>`}
+  </div>`;
+}
+
+function cardHTML(r){
+  const b = bestApp(r);
+  return `<button class="rcard" data-act="open" data-id="${r.id}">
+    <div class="thumb" style="background:${CUISINE_BG[r.cuisine]}">
+      ${CUISINE_EMOJI[r.cuisine]}
+      <span class="reg">${esc(r.region)} · ${esc(r.district)}</span>
+    </div>
+    <div class="rbody">
+      <div class="rname">${esc(r.name)}</div>
+      <div class="rmeta">${esc(r.cuisine)} · ${esc(r.price)}</div>
+      <div class="rstats">
+        <span><span class="star">★ ${r.rating}</span> <span style="color:var(--ink-soft)">(${fmt(r.reviewsCount)})</span></span>
+        <span class="dot">|</span>
+        <span>🛵 ${esc(r.eta)}</span>
+      </div>
+      <div class="apps">
+        ${APP_KEYS.map(k=>`<span class="apptag ${r.apps[k].on?'':'off'}">${APPS[k].short}</span>`).join('')}
+      </div>
+      ${b ? `<div class="best">
+        <span class="lbl">الأوفر للمنيو كامل</span>
+        <span class="val">${APPS[b.key].name} · ${fmt(b.total)} ر.س</span>
+      </div>` : ''}
+    </div>
+  </button>`;
+}
+
+/* ==========================================================
+   صفحة المطعم
+   ========================================================== */
+function getRest(){ return DATA.find(r=>r.id===state.id); }
+function basketSet(){
+  if(!state.basket[state.id]) state.basket[state.id] = new Set(getRest().menu.map((_,i)=>i));
+  return state.basket[state.id];
+}
+
+function renderDetail(){
+  const r = getRest();
+  const sel = basketSet();
+  app.innerHTML = `
+  <button class="back" data-act="back">→ رجوع للقائمة</button>
+  <section class="hero">
+    <div class="hero-top" style="background:${CUISINE_BG[r.cuisine]}">${CUISINE_EMOJI[r.cuisine]}</div>
+    <div class="hero-in">
+      <h1>${esc(r.name)}</h1>
+      <div class="sub">${esc(r.cuisine)} · ${esc(r.district)} · ${esc(r.region)} الرياض</div>
+      <p class="about">${esc(r.about)}</p>
+      <div class="kpis">
+        <div class="kpi"><div class="n">★ ${r.rating}</div><div class="l">${fmt(r.reviewsCount)} تقييم</div></div>
+        <div class="kpi"><div class="n">${esc(r.eta)}</div><div class="l">وقت التوصيل</div></div>
+        <div class="kpi"><div class="n">${esc(r.price)}</div><div class="l">مستوى السعر</div></div>
+        <div class="kpi"><div class="n">${APP_KEYS.filter(k=>r.apps[k].on).length}</div><div class="l">تطبيقات متاحة</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="${state.tab==='menu'}" data-act="tab" data-val="menu">قائمة الطعام</button>
+    <button class="tab" role="tab" aria-selected="${state.tab==='cmp'}" data-act="tab" data-val="cmp">مقارنة التطبيقات</button>
+    <button class="tab" role="tab" aria-selected="${state.tab==='rev'}" data-act="tab" data-val="rev">التقييمات والآراء</button>
+  </div>
+
+  <div class="panel">${
+    state.tab==='menu' ? menuHTML(r,sel) :
+    state.tab==='cmp'  ? cmpHTML(r,sel)  : revHTML(r)
+  }</div>`;
+}
+
+function menuHTML(r,sel){
+  return `
+  <h2 class="sec-h">قائمة الطعام</h2>
+  <p class="sec-p">كل صنف معروض بسعره داخل كل تطبيق. الخانة الخضراء هي الأرخص لهذا الصنف. حدّد الأصناف اللي تبي تطلبها وانتقل لتبويب المقارنة عشان تعرف أي تطبيق يطلع أوفر لطلبك أنت.</p>
+  <div class="basketbar">
+    <span>محدَّد <b>${sel.size}</b> من ${r.menu.length} صنف</span>
+    <span>
+      <button data-act="all">تحديد الكل</button> ·
+      <button data-act="none">إلغاء الكل</button>
+    </span>
+  </div>
+  ${r.menu.map((it,i)=>{
+    const prices = APP_KEYS.map(k=>({k, v:itemPrice(r,it,k)}));
+    const live = prices.filter(p=>p.v!==null);
+    const min = live.length ? Math.min(...live.map(p=>p.v)) : null;
+    return `<div class="mitem ${sel.has(i)?'picked':''}">
+      <button class="mcheck" data-act="pick" data-i="${i}" aria-label="تحديد ${esc(it.n)}" aria-pressed="${sel.has(i)}">✓</button>
+      <div class="minfo">
+        <div class="n">${esc(it.n)}</div>
+        ${it.d?`<div class="d">${esc(it.d)}</div>`:''}
+      </div>
+      <div class="mprices">
+        ${prices.map(p=>`<div class="pp ${p.v===null?'na':(p.v===min?'low':'')}">
+          <div class="a">${APPS[p.k].short}</div>
+          <div class="v">${p.v===null?'—':fmt(p.v)}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('')}
+  <p class="sec-p" style="margin-top:14px">الأسعار بالريال السعودي وتشمل زيادة التطبيق على سعر الفرع، ولا تشمل رسوم التوصيل.</p>`;
+}
+
+function cmpHTML(r,sel){
+  const items = r.menu.filter((_,i)=>sel.has(i));
+  if(!items.length){
+    return `<div class="empty"><div class="big">🧾</div><h3>ما حددت أي صنف</h3>
+      <p>ارجع لتبويب قائمة الطعام واختر الأصناف اللي تبي تطلبها.</p></div>`;
+  }
+  const c = compare(r, items);
+  const b = c.best;
+  return `
+  ${b ? `<div class="verdict">
+    <div class="k">التوصية</div>
+    <h3>اطلب من ${APPS[b.key].name}</h3>
+    <p>لهذا الطلب (${items.length} صنف)، ${APPS[b.key].name} يطلع الأوفر بإجمالي <span class="save">${fmt(b.total)} ر.س</span> شامل التوصيل${c.saving>0?`، أي بتوفير <span class="save">${fmt(c.saving)} ر.س</span> مقارنة بأغلى تطبيق متاح.`:'.'}</p>
+  </div>`:''}
+
+  <div class="cmp">
+    ${c.rows.map(row=>{
+      if(!row.on) return `<div class="ccard na">
+        <h4>${APPS[row.key].name}</h4>
+        <p style="font-size:14px;color:var(--ink-soft)">المطعم غير متوفر على هذا التطبيق حالياً.</p>
+      </div>`;
+      const win = b && row.key===b.key;
+      return `<div class="ccard ${win?'win':''}">
+        ${win?'<span class="ribbon">الأوفر</span>':''}
+        <h4>${APPS[row.key].name}</h4>
+        <div class="line"><span>قيمة الأصناف</span><b>${fmt(row.sub)} ر.س</b></div>
+        <div class="line"><span>رسوم التوصيل</span><b>${row.fee===0?'مجاني':fmt(row.fee)+' ر.س'}</b></div>
+        <div class="total"><span class="t">الإجمالي</span><span class="v">${fmt(row.total)}</span></div>
+        <div class="markup">زيادة عن سعر الفرع: ${Math.round((row.mult-1)*100)}%</div>
+      </div>`;
+    }).join('')}
+  </div>
+
+  <h2 class="sec-h">كيف تُحسب المقارنة؟</h2>
+  <p class="sec-p">نأخذ سعر الصنف في الفرع ونضربه في نسبة الزيادة المسجّلة لكل تطبيق، نجمع الأصناف المحددة، ثم نضيف رسوم التوصيل. المقارنة لا تحسب كوبونات الخصم ولا اشتراكات التوصيل المجاني، وهذي غالباً تقلب النتيجة — فراجع العروض قبل ما تعتمد التوصية.</p>`;
+}
+
+function revHTML(r){
+  const extra = state.extraReviews[r.id] || [];
+  const all = [...extra, ...r.reviews];
+  const dist = [5,4,3,2,1].map(s=>({s, n:all.filter(v=>v.r===s).length}));
+  const max = Math.max(1,...dist.map(d=>d.n));
+  return `
+  <h2 class="sec-h">آراء الزوار</h2>
+  <p class="sec-p">تقييمات مبنية على تجارب زوار المنصة داخل الفرع وعبر التوصيل.</p>
+  <div class="rev-top">
+    <div class="score">
+      <div class="n">${r.rating}</div>
+      <div class="s">${'★'.repeat(Math.round(r.rating))}${'☆'.repeat(5-Math.round(r.rating))}</div>
+      <div class="c">${fmt(r.reviewsCount)} تقييم</div>
+    </div>
+    <div class="bars">
+      ${dist.map(d=>`<div class="brow">
+        <span style="width:34px">${d.s} ★</span>
+        <span class="btrack"><span class="bfill" style="width:${(d.n/max*100)||0}%"></span></span>
+        <span style="width:22px;color:var(--ink-soft)">${d.n}</span>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  ${all.map(v=>`<article class="review">
+    <div class="rvh">
+      <div class="rvwho">
+        <span class="avatar">${esc(v.who.trim()[0]||'؟')}</span>
+        <span><span class="nm">${esc(v.who)}</span><br><span class="dt">${esc(v.dt)}</span></span>
+      </div>
+      <span class="star">${'★'.repeat(v.r)}<span style="color:#DDD">${'★'.repeat(5-v.r)}</span></span>
+    </div>
+    <p>${esc(v.t)}</p>
+  </article>`).join('')}
+
+  <div class="addbox">
+    <h4>شارك تجربتك</h4>
+    <div class="stars-pick" id="pick">
+      ${[1,2,3,4,5].map(i=>`<button data-act="star" data-val="${i}" class="${state.newRating>=i?'on':''}" aria-label="${i} نجوم">★</button>`).join('')}
+    </div>
+    <input id="rv-name" placeholder="اسمك" maxlength="30">
+    <textarea id="rv-text" rows="3" placeholder="كيف كانت التجربة؟ الطعم، السعر، وقت التوصيل…" maxlength="400"></textarea>
+    <button class="submit" data-act="send">أضف التقييم</button>
+  </div>`;
+}
+
+/* ==========================================================
+   التفاعل
+   ========================================================== */
+function render(){
+  window.scrollTo({top:0,behavior:'instant'});
+  state.view==='list' ? renderList() : renderDetail();
+}
+
+document.addEventListener('click', e=>{
+  const el = e.target.closest('[data-act]');
+  if(!el) return;
+  const act = el.dataset.act, val = el.dataset.val;
+
+  if(act==='region'){ state.region=val; render(); }
+  else if(act==='cuisine'){ state.cuisine=val; render(); }
+  else if(act==='open'){ state.view='detail'; state.id=el.dataset.id; state.tab='menu'; state.newRating=0; render(); }
+  else if(act==='back'){ state.view='list'; render(); }
+  else if(act==='tab'){ state.tab=val; render(); }
+  else if(act==='pick'){
+    const s=basketSet(), i=+el.dataset.i;
+    s.has(i)?s.delete(i):s.add(i); render();
+  }
+  else if(act==='all'){ state.basket[state.id]=new Set(getRest().menu.map((_,i)=>i)); render(); }
+  else if(act==='none'){ state.basket[state.id]=new Set(); render(); }
+  else if(act==='star'){ state.newRating=+val; render(); }
+  else if(act==='send'){
+    const nm=(document.getElementById('rv-name').value||'زائر').trim();
+    const tx=(document.getElementById('rv-text').value||'').trim();
+    if(!state.newRating){ alert('اختر عدد النجوم أولاً.'); return; }
+    if(tx.length<5){ alert('اكتب رأيك في جملة على الأقل.'); return; }
+    (state.extraReviews[state.id] ||= []).unshift({who:nm, r:state.newRating, dt:'الآن', t:tx});
+    state.newRating=0; render();
+  }
+});
+
+document.addEventListener('change', e=>{
+  if(e.target.id==='sort'){ state.sort=e.target.value; render(); }
+});
+
+let t;
+document.getElementById('q').addEventListener('input', e=>{
+  clearTimeout(t);
+  t=setTimeout(()=>{ state.q=e.target.value; state.view='list'; render(); },180);
+});
+
+render();
+</script>
 </body>
 </html>
