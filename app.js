@@ -3,7 +3,7 @@
    ========================================================== */
 const state = {
   view:"list", id:null, tab:"menu",
-  region:"الكل", cuisine:"الكل", q:"", sort:"rating",
+  cuisine:"الكل", q:"", sort:"rating",
   basket:{}, // id -> Set of item indexes
   newRating:0,
   extraReviews:{}
@@ -17,11 +17,10 @@ const app = document.getElementById('app');
    ========================================================== */
 function filtered(){
   let out = DATA.filter(r=>{
-    if(state.region!=="الكل" && r.region!==state.region) return false;
     if(state.cuisine!=="الكل" && r.cuisine!==state.cuisine) return false;
     if(state.q){
       const q = state.q.trim();
-      if(!(r.name.includes(q) || r.cuisine.includes(q) || r.district.includes(q))) return false;
+      if(!(r.name.includes(q) || r.cuisine.includes(q) || r.district.includes(q) || (r.branch||'').includes(q))) return false;
     }
     return true;
   });
@@ -49,7 +48,6 @@ function renderList(){
   const list = filtered();
   app.innerHTML = `
   <section class="filters">
-    ${chipRow("المنطقة", REGIONS, state.region, "region")}
     ${chipRow("نوع الطعام", CUISINES, state.cuisine, "cuisine")}
   </section>
 
@@ -69,7 +67,7 @@ function renderList(){
       <div class="empty">
         <div class="big">🍽</div>
         <h3>ما فيه مطاعم بهذي الفلاتر</h3>
-        <p>جرّب توسيع المنطقة أو تغيير نوع الطعام.</p>
+        <p>جرّب تغيير نوع الطعام أو امسح البحث.</p>
       </div>`}
   </div>`;
 }
@@ -79,7 +77,7 @@ function cardHTML(r){
   return `<button class="rcard" data-act="open" data-id="${r.id}">
     <div class="thumb" style="background:${CUISINE_BG[r.cuisine]}">
       ${CUISINE_EMOJI[r.cuisine]}
-      <span class="reg">${esc(r.region)} · ${esc(r.district)}</span>
+      <span class="reg">📍 ${esc(r.district)}</span>
     </div>
     <div class="rbody">
       <div class="rname">${esc(r.name)}</div>
@@ -118,10 +116,12 @@ function renderDetail(){
     <div class="hero-top" style="background:${CUISINE_BG[r.cuisine]}">${CUISINE_EMOJI[r.cuisine]}</div>
     <div class="hero-in">
       <h1>${esc(r.name)}</h1>
-      <div class="sub">${esc(r.cuisine)} · ${esc(r.district)} · ${esc(r.region)} الرياض</div>
+      <div class="sub">${esc(r.cuisine)} · ${esc(r.district)} · الرياض</div>
       <p class="about">${esc(r.about)}</p>
+      <p class="branch">التقييم مأخوذ من <b>${esc(r.branch)}</b> —
+        <a href="${mapsUrl(r)}" target="_blank" rel="noopener">افتح الفرع في قوقل ماب ↗</a></p>
       <div class="kpis">
-        <div class="kpi"><div class="n">★ ${r.rating}</div><div class="l">${fmt(r.reviewsCount)} تقييم</div></div>
+        <div class="kpi"><div class="n">★ ${r.rating}</div><div class="l">${fmt(r.reviewsCount)} تقييم قوقل ماب</div></div>
         <div class="kpi"><div class="n">${esc(r.eta)}</div><div class="l">وقت التوصيل</div></div>
         <div class="kpi"><div class="n">${esc(r.price)}</div><div class="l">مستوى السعر</div></div>
         <div class="kpi"><div class="n">${APP_KEYS.filter(k=>r.apps[k].on).length}</div><div class="l">تطبيقات متاحة</div></div>
@@ -217,7 +217,9 @@ function revHTML(r){
   const max = Math.max(1,...dist.map(d=>d.n));
   return `
   <h2 class="sec-h">آراء الزوار</h2>
-  <p class="sec-p">تقييمات مبنية على تجارب زوار المنصة داخل الفرع وعبر التوصيل.</p>
+  <p class="sec-p">النجوم وعدد التقييمات مأخوذة من صفحة <b>${esc(r.branch)}</b> على قوقل ماب
+    (<a href="${mapsUrl(r)}" target="_blank" rel="noopener">تحقّق منها هنا</a>).
+    الآراء المكتوبة تحت هي نماذج توضيحية من زوار المنصة.</p>
   <div class="rev-top">
     <div class="score">
       <div class="n">${r.rating}</div>
@@ -268,8 +270,7 @@ document.addEventListener('click', e=>{
   if(!el) return;
   const act = el.dataset.act, val = el.dataset.val;
 
-  if(act==='region'){ state.region=val; render(); }
-  else if(act==='cuisine'){ state.cuisine=val; render(); }
+  if(act==='cuisine'){ state.cuisine=val; render(); }
   else if(act==='open'){ state.view='detail'; state.id=el.dataset.id; state.tab='menu'; state.newRating=0; render(); }
   else if(act==='back'){ state.view='list'; render(); }
   else if(act==='tab'){ state.tab=val; render(); }

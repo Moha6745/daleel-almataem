@@ -135,7 +135,11 @@ header.top{
 .hero-in{padding:18px 22px 20px}
 .hero h1{font-size:28px;font-weight:900;letter-spacing:-.5px}
 .hero .sub{color:var(--ink-soft);font-size:14.5px;margin:4px 0 14px}
-.hero .about{font-size:15px;color:#3A3A3A;max-width:70ch;margin-bottom:16px}
+.hero .about{font-size:15px;color:#3A3A3A;max-width:70ch;margin-bottom:12px}
+.hero .branch{font-size:13.5px;color:var(--ink-soft);background:#FAFAF8;border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-bottom:16px;max-width:70ch}
+.hero .branch b{color:var(--ink)}
+.hero .branch a{color:#0B6BCB;text-decoration:none;white-space:nowrap}
+.hero .branch a:hover{text-decoration:underline}
 .kpis{display:flex;gap:10px;flex-wrap:wrap}
 .kpi{
   background:var(--bg);border-radius:14px;padding:10px 16px;min-width:96px;
