@@ -1,0 +1,5 @@
+node_modules/
+
+# صور المنيو للعمل المحلي فقط — ما ترفعها للمستودع
+menu-images/*
+!menu-images/README.md

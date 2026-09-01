@@ -1,0 +1,15 @@
+{
+  "name": "daleel-almataem",
+  "version": "1.0.0",
+  "description": "دليل مطاعم الرياض — الموقع نفسه بدون اعتماديات، والاعتماديات هنا لأدوات tools/ فقط",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "import:images": "node tools/import-from-images.mjs",
+    "ratings": "node tools/fetch-google-ratings.mjs"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.122.0",
+    "zod": "^4.0.0"
+  }
+}

@@ -84,14 +84,21 @@ for (const rest of targets) {
       `    ${hit.placeName} — ${hit.address}`
     );
 
-    if (moved && !DRY) {
+    if (!DRY) {
       const re = new RegExp(
         `(id:"${rest.id}",[\\s\\S]{0,800}?rating:)([\\d.]+)(, *reviewsCount:)(\\d+)`
       );
       if (!re.test(out)) throw new Error('ما قدرت أحدد مكان التقييم داخل data.js');
       out = out.replace(re, `$1${hit.rating}$3${hit.reviewsCount}`);
+
+      // ارفع علم ratingVerified عشان الواجهة تعرض "تقييم قوقل ماب" بدل "تجريبي"
+      if (!rest.ratingVerified) {
+        const flag = new RegExp(`(id:"${rest.id}",[\\s\\S]{0,400}?branch:"[^"]*",)`);
+        if (!flag.test(out)) throw new Error('ما قدرت أحدد مكان حقل branch داخل data.js');
+        out = out.replace(flag, '$1 ratingVerified:true,');
+      }
     }
-    if (moved) changed.push(rest.id);
+    if (moved || !rest.ratingVerified) changed.push(rest.id);
   } catch (err) {
     console.log(`✖ ${rest.name} — ${rest.branch}: ${err.message}`);
     failed.push(rest.id);

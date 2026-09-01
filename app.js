@@ -9,6 +9,13 @@ const state = {
   extraReviews:{}
 };
 
+/* علمان منفصلان لأن الأسعار والتقييم يجون من مصدرين مختلفين:
+     verified        الأسعار اتجمعت فعلاً — يرفعه tools/import-from-images.mjs
+     ratingVerified  التقييم اتجمع من قوقل ماب — يرفعه tools/fetch-google-ratings.mjs
+   مطعم ممكن يكون أسعاره حقيقية وتقييمه تجريبي، أو العكس. */
+const isVerified = r => r.verified === true;
+const hasRealRating = r => r.ratingVerified === true;
+
 const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const app = document.getElementById('app');
 
@@ -78,6 +85,7 @@ function cardHTML(r){
     <div class="thumb" style="background:${CUISINE_BG[r.cuisine]}">
       ${CUISINE_EMOJI[r.cuisine]}
       <span class="reg">📍 ${esc(r.district)}</span>
+      ${isVerified(r) ? '<span class="vflag ok">✅ أسعار حقيقية</span>' : '<span class="vflag">أسعار تجريبية</span>'}
     </div>
     <div class="rbody">
       <div class="rname">${esc(r.name)}</div>
@@ -85,7 +93,7 @@ function cardHTML(r){
       <div class="rstats">
         <span><span class="star">★ ${r.rating}</span> <span style="color:var(--ink-soft)">(${fmt(r.reviewsCount)})</span></span>
         <span class="dot">|</span>
-        <span>🛵 ${esc(r.eta)}</span>
+        <span>${r.menu.length ? `🛵 ${esc(r.eta)}` : '📋 بلا منيو بعد'}</span>
       </div>
       <div class="apps">
         ${APP_KEYS.map(k=>`<span class="apptag ${r.apps[k].on?'':'off'}">${APPS[k].short}</span>`).join('')}
@@ -118,10 +126,18 @@ function renderDetail(){
       <h1>${esc(r.name)}</h1>
       <div class="sub">${esc(r.cuisine)} · ${esc(r.district)} · الرياض</div>
       <p class="about">${esc(r.about)}</p>
-      <p class="branch">التقييم مأخوذ من <b>${esc(r.branch)}</b> —
-        <a href="${mapsUrl(r)}" target="_blank" rel="noopener">افتح الفرع في قوقل ماب ↗</a></p>
+      ${isVerified(r) && hasRealRating(r)
+        ? `<p class="branch">الأسعار والتقييم من <b>${esc(r.branch)}</b> —
+            <a href="${mapsUrl(r)}" target="_blank" rel="noopener">افتح الفرع في قوقل ماب ↗</a></p>`
+        : `<p class="branch warn">⚠️ ${[
+              isVerified(r) ? null : (r.menu.length
+                ? '<b>الأسعار تجريبية</b> — ما جُمعت من جاهز ولا هنقر ولا كيتا'
+                : '<b>الأسعار ما انجمعت بعد</b> — ما فيه منيو لهذا المطعم'),
+              hasRealRating(r) ? null : '<b>التقييم تجريبي</b> — ما جُمع من قوقل ماب'
+            ].filter(Boolean).join('، و')}. الفرع: ${esc(r.branch)} —
+            <a href="${mapsUrl(r)}" target="_blank" rel="noopener">افتحه في قوقل ماب ↗</a></p>`}
       <div class="kpis">
-        <div class="kpi"><div class="n">★ ${r.rating}</div><div class="l">${fmt(r.reviewsCount)} تقييم قوقل ماب</div></div>
+        <div class="kpi"><div class="n">★ ${r.rating}</div><div class="l">${hasRealRating(r) ? `${fmt(r.reviewsCount)} تقييم قوقل ماب` : 'تقييم تجريبي'}</div></div>
         <div class="kpi"><div class="n">${esc(r.eta)}</div><div class="l">وقت التوصيل</div></div>
         <div class="kpi"><div class="n">${esc(r.price)}</div><div class="l">مستوى السعر</div></div>
         <div class="kpi"><div class="n">${APP_KEYS.filter(k=>r.apps[k].on).length}</div><div class="l">تطبيقات متاحة</div></div>
@@ -142,8 +158,13 @@ function renderDetail(){
 }
 
 function menuHTML(r,sel){
+  if(!r.menu.length) return `<div class="empty">
+    <div class="big">📋</div><h3>المنيو ما انجمع بعد</h3>
+    <p>هذا المطعم أضيف من قوقل ماب، وأسعاره داخل التطبيقات لسه ما اتجمعت.
+       التقييم والحي والفرع حقيقيين — المنيو هو الناقص.</p></div>`;
   return `
   <h2 class="sec-h">قائمة الطعام</h2>
+  ${isVerified(r) ? '' : '<p class="databanner">⚠️ أسعار هذا المطعم <b>تجريبية</b> — ما جُمعت من التطبيقات. لا تبني عليها قرار طلب.</p>'}
   <p class="sec-p">كل صنف معروض بسعره داخل كل تطبيق. الخانة الخضراء هي الأرخص لهذا الصنف. حدّد الأصناف اللي تبي تطلبها وانتقل لتبويب المقارنة عشان تعرف أي تطبيق يطلع أوفر لطلبك أنت.</p>
   <div class="basketbar">
     <span>محدَّد <b>${sel.size}</b> من ${r.menu.length} صنف</span>
@@ -174,6 +195,9 @@ function menuHTML(r,sel){
 }
 
 function cmpHTML(r,sel){
+  if(!r.menu.length) return `<div class="empty">
+    <div class="big">🧾</div><h3>ما فيه أسعار نقارنها</h3>
+    <p>المقارنة تحتاج أسعار الأصناف داخل كل تطبيق، وهي ما انجمعت لهذا المطعم بعد.</p></div>`;
   const items = r.menu.filter((_,i)=>sel.has(i));
   if(!items.length){
     return `<div class="empty"><div class="big">🧾</div><h3>ما حددت أي صنف</h3>
@@ -182,6 +206,7 @@ function cmpHTML(r,sel){
   const c = compare(r, items);
   const b = c.best;
   return `
+  ${isVerified(r) ? '' : '<p class="databanner">⚠️ هذي المقارنة مبنية على <b>أسعار تجريبية</b>، مو على أسعار حقيقية من التطبيقات — النتيجة تحت ما تعني شي لين تُجمع الأسعار الفعلية.</p>'}
   ${b ? `<div class="verdict">
     <div class="k">التوصية</div>
     <h3>اطلب من ${APPS[b.key].name}</h3>
@@ -217,9 +242,13 @@ function revHTML(r){
   const max = Math.max(1,...dist.map(d=>d.n));
   return `
   <h2 class="sec-h">آراء الزوار</h2>
-  <p class="sec-p">النجوم وعدد التقييمات مأخوذة من صفحة <b>${esc(r.branch)}</b> على قوقل ماب
-    (<a href="${mapsUrl(r)}" target="_blank" rel="noopener">تحقّق منها هنا</a>).
-    الآراء المكتوبة تحت هي نماذج توضيحية من زوار المنصة.</p>
+  ${hasRealRating(r)
+    ? `<p class="sec-p">النجوم وعدد التقييمات مأخوذة من صفحة <b>${esc(r.branch)}</b> على قوقل ماب
+        (<a href="${mapsUrl(r)}" target="_blank" rel="noopener">تحقّق منها هنا</a>).</p>`
+    : `<p class="databanner">⚠️ النجوم وعدد التقييمات <b>أرقام تجريبية</b> — ما جُمعت من قوقل ماب.</p>`}
+  ${!r.reviews.length ? '<p class="sec-p">ما فيه آراء مكتوبة لهذا المطعم — كن أول من يشارك تجربته.</p>' : ''}
+  ${r.reviews.length ? `<p class="databanner">⚠️ الآراء المكتوبة تحت <b>نصوص توضيحية كتبها الذكاء الاصطناعي</b>؛
+      أسماؤها وكلامها ما يعود لأشخاص حقيقيين.</p>` : ''}
   <div class="rev-top">
     <div class="score">
       <div class="n">${r.rating}</div>
@@ -241,7 +270,7 @@ function revHTML(r){
         <span class="avatar">${esc(v.who.trim()[0]||'؟')}</span>
         <span><span class="nm">${esc(v.who)}</span><br><span class="dt">${esc(v.dt)}</span></span>
       </div>
-      <span class="star">${'★'.repeat(v.r)}<span style="color:#DDD">${'★'.repeat(5-v.r)}</span></span>
+      <span class="star">${'★'.repeat(v.r)}<span style="color:#DDD">${'★'.repeat(5-v.r)}</span></span>${v.dt==='الآن' ? '' : '<span class="sample">نموذج</span>'}
     </div>
     <p>${esc(v.t)}</p>
   </article>`).join('')}
